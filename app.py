@@ -3,6 +3,7 @@ from flask_restful import Resource, Api
 from flask_restful.reqparse import RequestParser
 from pymongo import MongoClient
 import datetime
+import json
 
 app = Flask(__name__)
 api = Api(app, prefix="/api/v1")
@@ -42,7 +43,9 @@ class NewsCollection(Resource):
         all_data = []
         for data in cursor:
             all_data.append(data)
-        return all_data
+        parsed = json.loads(all_data)
+        json.dumps(parsed, indent=4, sort_keys=True)
+        return parsed
 
         # def post(self):
         #     args = subscriber_request_parser.parse_args()
