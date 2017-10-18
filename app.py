@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_restful import Resource, Api
 from flask_restful.reqparse import RequestParser
 from pymongo import MongoClient
+import json
 
 app = Flask(__name__)
 api = Api(app, prefix="/api/v1")
@@ -41,7 +42,7 @@ class NewsCollection(Resource):
         all_data = []
         for data in cursor:
             all_data.append(data)
-        return all_data
+        return jsonify(all_data)
 
         # def post(self):
         #     args = subscriber_request_parser.parse_args()
@@ -53,11 +54,11 @@ class News(Resource):
     def get(self, source):
         cursor = get_news_by_source(source)
         if not cursor:
-            return {"error": "Source not found"}
+            return jsonify({"error": "Source not found"})
         all_data = []
         for data in cursor:
             all_data.append(data)
-        return all_data
+        return jsonify(all_data)
 
         # def put(self, id):
         #     args = subscriber_request_parser.parse_args()

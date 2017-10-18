@@ -11,7 +11,7 @@ news = db.news
 
 news.delete_many({"source": "prothom_alo"})
 
-page = rq.get('http://www.prothom-alo.com/archive')
+page = rq.get('http://www.prothom-alo.com/archive/2017-10-18')
 
 soup = BeautifulSoup(page.content, 'html.parser')
 
@@ -28,7 +28,7 @@ for i in info:
     time = i.find('span', class_='time aitm')
     time = time['data-published']
     link = i.find('a', class_='link_overlay')
-    link = 'prothom-alo.com/'+link['href']
+    link = 'http://www.prothom-alo.com/'+link['href']
     # a_news = [
     #     ('source','prothom_alo'),
     #     ('title',title),
