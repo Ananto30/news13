@@ -7,13 +7,20 @@ import json
 app = Flask(__name__)
 api = Api(app, prefix="/api/v1")
 
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return "<h3>Use 'api/v1/news' for all news, and for other please check docs</h3>", 404
+
+
 client = MongoClient("mongodb://ananto:hoga123@ds021346.mlab.com:21346/news")
 db = client.news
 news = db.news
 
 
 def get_news_by_source(source):
-    has_news = news.find({"source": source}, {"_id":0}).limit(10)
+    has_news = news.find({"source": source}, {"_id": 0}).limit(10)
     if has_news:
         return has_news
 
@@ -38,7 +45,7 @@ subscriber_request_parser.add_argument("id", type=int, required=True, help="Plea
 
 class NewsCollection(Resource):
     def get(self):
-        cursor = news.find({},{"_id":0}).limit(10)
+        cursor = news.find({}, {"_id": 0}).limit(10)
         all_data = []
         for data in cursor:
             all_data.append(data)
@@ -81,4 +88,4 @@ api.add_resource(NewsCollection, '/news')
 api.add_resource(News, '/news/<source>')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=False)
