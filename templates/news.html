@@ -4,22 +4,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <meta
+      name="keywords"
+      content="News, news, news bangladesh, newsbd, bdnews, bangladesh news, সর্বশেষ খবর​, খবর​, সর্বশেষ, বাংলাদেশ"
+    />
+
+    <meta
+      name="description"
+      content="Latest news of Bangladesh. বাংলাদেশের​ সর্বশেষ খবর​।"
+    />
+
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/generic.css') }}"
     />
 
-    <title>সর্বশেষ খবর​</title>
+    <title>বাংলাদেশের​ সর্বশেষ খবর​ - Latest news of Bangladesh</title>
   </head>
   <body>
     <h1>সর্বশেষ খবর​</h1>
     <h6>বাংলাদেশ | প্রথম আলো</h6>
-    <hr>
+    <hr />
     {% for news in news_list %}
     <h4>{{news.title}}</h4>
     <h6>{{news.time_ago}}</h6>
     <p>{{news.summary}} <a href="{{news.link}}">আরো</a></p>
-    <hr>
+    <hr />
     {% endfor %}
   </body>
 </html>

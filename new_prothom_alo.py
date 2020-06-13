@@ -62,7 +62,7 @@ def get_news():
         }
         # news.insert_one(a_news)
         news.append(a_news)
-        print(time)
+        print(title)
 
     return news
 
@@ -78,8 +78,6 @@ def pretty_date(time=False):
     """
 
     now = datetime.now(pytz.utc)
-    print(time)
-    print(now)
     if type(time) is int:
         diff = now - datetime.fromtimestamp(time)
     elif isinstance(time, datetime):
