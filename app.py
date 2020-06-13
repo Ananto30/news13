@@ -1,22 +1,27 @@
-from flask import Flask, jsonify
-from flask_restful import Resource, Api
+import json
+
+from flask import Flask, jsonify, render_template
+from flask_restful import Api, Resource
 from flask_restful.reqparse import RequestParser
 from pymongo import MongoClient
-import json
+
+from flask_caching import Cache
+from new_prothom_alo import get_news
 
 app = Flask(__name__)
 api = Api(app, prefix="/api/v1")
 
+cache = Cache(app, config={"CACHE_TYPE": "simple"})
+
 
 @app.errorhandler(404)
 def page_not_found(e):
-    # note that we set the 404 status explicitly
-    return "<h3>Use 'api/v1/news' for all news, and for other please check docs</h3>", 404
+    return render_template("404.html")
 
 
-client = MongoClient("mongodb://ananto:hoga123@ds021346.mlab.com:21346/news")
-db = client.news
-news = db.news
+# client = MongoClient("mongodb://ananto:hoga123@ds021346.mlab.com:21346/news")
+# db = client.news
+# news = db.news
 
 
 def get_news_by_source(source):
@@ -27,20 +32,24 @@ def get_news_by_source(source):
 
 def mongodb_model(data):
     d = {
-        'source': data['source'],
-        'title': data['title'],
-        'summary': data['summary'],
-        'author': data['author'],
-        'published_time': data['published_time'],
-        'link': data['link']
+        "source": data["source"],
+        "title": data["title"],
+        "summary": data["summary"],
+        "author": data["author"],
+        "published_time": data["published_time"],
+        "link": data["link"],
     }
     return d
 
 
 subscriber_request_parser = RequestParser(bundle_errors=True)
-subscriber_request_parser.add_argument("name", type=str, required=True, help="Name has to be valid string")
+subscriber_request_parser.add_argument(
+    "name", type=str, required=True, help="Name has to be valid string"
+)
 subscriber_request_parser.add_argument("email", required=True)
-subscriber_request_parser.add_argument("id", type=int, required=True, help="Please enter valid integer as ID")
+subscriber_request_parser.add_argument(
+    "id", type=int, required=True, help="Please enter valid integer as ID"
+)
 
 
 class NewsCollection(Resource):
@@ -84,8 +93,16 @@ class News(Resource):
         #     return {"message": "Deleted"}
 
 
-api.add_resource(NewsCollection, '/news')
-api.add_resource(News, '/news/<source>')
+api.add_resource(NewsCollection, "/news")
+api.add_resource(News, "/news/<source>")
 
-if __name__ == '__main__':
-    app.run(debug=False)
+
+@app.route("/")
+@cache.cached(timeout=300)
+def hello():
+    news_list = get_news()
+    return render_template("news.html", news_list=news_list)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
