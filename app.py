@@ -1,14 +1,19 @@
 import json
 
 from flask import Flask, jsonify, render_template
+from flask_caching import Cache
 from flask_restful import Api, Resource
 from flask_restful.reqparse import RequestParser
+from flask_sslify import SSLify
 from pymongo import MongoClient
 
-from flask_caching import Cache
 from new_prothom_alo import get_news
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", static_url_path="")
+
+sslify = SSLify(app)
+
+
 api = Api(app, prefix="/api/v1")
 
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
