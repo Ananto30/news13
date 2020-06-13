@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="google-site-verification" content="Zy4A1HXpeIGu1CRBZzOxhLix8HO5svgF9XDPs5IO2V4" />
+    <meta
+      name="google-site-verification"
+      content="Zy4A1HXpeIGu1CRBZzOxhLix8HO5svgF9XDPs5IO2V4"
+    />
     <meta
       name="keywords"
       content="News, news, news bangladesh, newsbd, bdnews, bangladesh news, সর্বশেষ খবর​, খবর​, সর্বশেষ, বাংলাদেশ"
@@ -23,12 +26,14 @@
   </head>
   <body>
     <h1>সর্বশেষ খবর​</h1>
-    <h6>বাংলাদেশ | প্রথম আলো</h6>
+    <h6>
+      <a href="/">সব</a> | <a href="/bangladesh">বাংলাদেশ</a> (সূত্র: প্রথম আলো)
+    </h6>
     <hr />
     {% for news in news_list %}
-    <h4>{{news.title}}</h4>
-    <h6>{{news.time_ago}}</h6>
-    <p>{{news.summary}} <a href="{{news.link}}">আরো</a></p>
+    <h4>{{ news.title }}</h4>
+    <h6>{{ news.time_ago }}</h6>
+    <p>{{ news.summary }} <a href="{{ news.link }}">বিস্তারিত</a></p>
     <hr />
     {% endfor %}
   </body>
