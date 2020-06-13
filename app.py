@@ -1,18 +1,15 @@
-import json
-
 from flask import Flask, jsonify, render_template
 from flask_caching import Cache
 from flask_restful import Api, Resource
 from flask_restful.reqparse import RequestParser
 from flask_sslify import SSLify
-from pymongo import MongoClient
 
-from new_prothom_alo import get_news
+from prothom_alo_bangladesh import get_bangladesh_news
+from prothom_alo_feed import get_all_news
 
 app = Flask(__name__, static_folder="static", static_url_path="")
 
 sslify = SSLify(app)
-
 
 api = Api(app, prefix="/api/v1")
 
@@ -104,8 +101,15 @@ api.add_resource(News, "/news/<source>")
 
 @app.route("/")
 @cache.cached(timeout=300)
-def hello():
-    news_list = get_news()
+def all_news():
+    news_list = get_all_news()
+    return render_template("news.html", news_list=news_list)
+
+
+@app.route("/bangladesh")
+@cache.cached(timeout=300)
+def bangladesh_news():
+    news_list = get_bangladesh_news()
     return render_template("news.html", news_list=news_list)
 
 
