@@ -16,7 +16,26 @@
       name="description"
       content="Latest news of Bangladesh. বাংলাদেশের​ সর্বশেষ খবর​।"
     />
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2&display=swap" rel="stylesheet">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-169357219-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-169357219-1");
+    </script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+Da+2&display=swap"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/generic.css') }}"
