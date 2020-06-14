@@ -8,8 +8,12 @@
     /* --font-header: "Noto Sans", "Arial", "Helvetica", sans-serif;
     --font-main: "Noto Serif", "Arial", "Helvetica", sans-serif; */
 
-    --font-header: 'Baloo Da 2', cursive;
-    --font-main: 'Baloo Da 2', cursive;
+    /* --font-header: 'Baloo Da 2', cursive;
+    --font-main: 'Baloo Da 2', cursive; */
+
+    --font-header: 'Baloo Da 2';
+    --font-main: 'Baloo Da 2';
+
     --font-mono: "Menlo", "Fira Mono", monospace;
 
     /* --font-main: 'Hind Siliguri', sans-serif;
