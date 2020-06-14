@@ -9,14 +9,15 @@ from helpers import pretty_date
 # db = client.news
 # news = db.news
 
-page = rq.get("https://www.prothomalo.com/bangladesh/article?page=1")
-
-soup = BeautifulSoup(page.content, "html.parser")
-
-info = soup.find_all("div", class_="col col1")
-
 
 def get_bangladesh_news():
+
+    page = rq.get("https://www.prothomalo.com/bangladesh/article?page=1")
+
+    soup = BeautifulSoup(page.content, "html.parser")
+
+    info = soup.find_all("div", class_="col col1")
+
     news = []
 
     for i in info:
@@ -50,5 +51,6 @@ def get_bangladesh_news():
         print(title)
 
     return news
+
 
 # pprint(news)
