@@ -6,14 +6,14 @@ import requests as rq
 from bs4 import BeautifulSoup
 from flask import Flask, jsonify, render_template
 from flask_caching import Cache
-from flask_restful import Api, Resource
 from flask_sslify import SSLify
+
+from ..prothom_alo_feed import get_all_news
 
 app = Flask(__name__, static_folder="static", static_url_path="")
 
 sslify = SSLify(app)
 
-api = Api(app, prefix="/api/v1")
 
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
 
@@ -23,21 +23,10 @@ def page_not_found(e):
     return render_template("404.html")
 
 
-class NewsCollection(Resource):
-    @cache.cached(timeout=300)
-    def get(self):
-
-        news_list = get_bangladesh_news()
-        return jsonify(news_list)
-
-
-api.add_resource(NewsCollection, "/news")
-
-
-@app.route("/news")
+@app.route("/")
 @cache.cached(timeout=300)
 def bangladesh_news():
-    news_list = get_bangladesh_news()
+    news_list = get_all_news()
     # return render_template("news.html", news_list=news_list)
     return jsonify(news_list)
 

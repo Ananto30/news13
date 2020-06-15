@@ -2,7 +2,7 @@
     "routes": [
         {
             "src": "/api/news",
-            "dest": "/news"
+            "dest": "/"
         },
         {
             "src": "/news",
