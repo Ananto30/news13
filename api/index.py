@@ -114,7 +114,3 @@ def all_news():
 def bangladesh_news():
     news_list = get_bangladesh_news()
     return render_template("news.html", news_list=news_list)
-
-
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
