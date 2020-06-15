@@ -7,15 +7,12 @@ import requests as rq
 from bs4 import BeautifulSoup
 from flask import Flask, jsonify, render_template
 from flask_caching import Cache
-from flask_sslify import SSLify
 
 sys.path.append("..")
 from prothom_alo_feed import get_all_news
 
 
 app = Flask(__name__, static_folder="static", static_url_path="")
-
-sslify = SSLify(app)
 
 
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
@@ -26,7 +23,7 @@ def page_not_found(e):
     return render_template("404.html")
 
 
-@app.route("/")
+@app.route("/api/news")
 @cache.cached(timeout=300)
 def bangladesh_news():
     news_list = get_all_news()
