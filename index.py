@@ -55,12 +55,15 @@ subscriber_request_parser.add_argument(
 
 
 class NewsCollection(Resource):
+    @cache.cached(timeout=300)
     def get(self):
-        cursor = news.find({}, {"_id": 0}).limit(10)
-        all_data = []
-        for data in cursor:
-            all_data.append(data)
-        return jsonify(all_data)
+        # cursor = news.find({}, {"_id": 0}).limit(10)
+        # all_data = []
+        # for data in cursor:
+        #     all_data.append(data)
+
+        news_list = get_bangladesh_news()
+        return jsonify(news_list)
 
         # def post(self):
         #     args = subscriber_request_parser.parse_args()
