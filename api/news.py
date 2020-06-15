@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 
 import dateutil.parser
@@ -8,7 +9,9 @@ from flask import Flask, jsonify, render_template
 from flask_caching import Cache
 from flask_sslify import SSLify
 
-from ..prothom_alo_feed import get_all_news
+sys.path.append("..")
+from prothom_alo_feed import get_all_news
+
 
 app = Flask(__name__, static_folder="static", static_url_path="")
 
