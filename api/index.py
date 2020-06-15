@@ -34,7 +34,7 @@ class NewsCollection(Resource):
 api.add_resource(NewsCollection, "/news")
 
 
-@app.route("/api/news")
+@app.route("/news")
 @cache.cached(timeout=300)
 def bangladesh_news():
     news_list = get_bangladesh_news()

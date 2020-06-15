@@ -1,8 +1,12 @@
 {
     "routes": [
         {
-            "src": "/api/.*",
-            "dest": "/"
+            "src": "/api/news",
+            "dest": "/news"
+        },
+        {
+            "src": "/news",
+            "dest": "/api/v1/news"
         }
     ]
 }
