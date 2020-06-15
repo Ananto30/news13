@@ -34,11 +34,12 @@ class NewsCollection(Resource):
 api.add_resource(NewsCollection, "/news")
 
 
-@app.route("/news")
+@app.route("/api/news")
 @cache.cached(timeout=300)
 def bangladesh_news():
     news_list = get_bangladesh_news()
-    return render_template("news.html", news_list=news_list)
+    # return render_template("news.html", news_list=news_list)
+    return jsonify(news_list)
 
 
 def get_bangladesh_news():
