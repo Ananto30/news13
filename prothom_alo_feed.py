@@ -1,42 +1,40 @@
 import dateutil.parser
 import requests as rq
 from bs4 import BeautifulSoup
+from pprint import pprint
 
-# news.delete_many({"source": "prothom_alo"})
+
 from helpers import pretty_date
-
-# client = MongoClient("mongodb://ananto:hoga123@ds021346.mlab.com:21346/news")
-# db = client.news
-# news = db.news
 
 
 def get_all_news():
 
-    page = rq.get("https://www.prothomalo.com/feed/")
+    page = rq.get("https://www.prothomalo.com/feed")
 
     soup = BeautifulSoup(page.content, "lxml-xml")
 
-    info = soup.find_all("item")
+    info = soup.find_all("entry")
 
     news = []
 
     for i in info:
         title = i.find("title")
         title = title.get_text()
-        content = i.find("content:encoded")
+        content = i.find("summary")
         summary = BeautifulSoup(content.get_text().strip(), "html.parser")
         if summary:
             summary = summary.get_text().strip()
-            summary = summary[:-10]
+            # summary = summary[:-10]
         else:
             continue
-        author = i.find("dc:creator")
+        author = i.find("author")
+        author = author.find("name")
         if author:
             author = author.get_text()
-        time = i.find("pubDate")
+        time = i.find("published")
         if time:
             time = time.get_text()
-        link = i.find("link").get_text()
+        link = i.find("link")
         a_news = {
             "source": "prothom_alo",
             "title": title,
@@ -44,7 +42,7 @@ def get_all_news():
             "author": author,
             "published_time": time,
             "time_ago": pretty_date(dateutil.parser.parse(time)),
-            "link": link,
+            "link": link["href"],
         }
         # news.insert_one(a_news)
         news.append(a_news)
@@ -53,4 +51,4 @@ def get_all_news():
     return news
 
 
-# pprint(get_news())
+# pprint(get_all_news())
