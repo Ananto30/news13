@@ -42,9 +42,9 @@ def get_bangladesh_news():
             "time_ago": pretty_date(dateutil.parser.parse(time)),
             "link": link,
         }
-        # news.insert_one(a_news)
+
         news.append(a_news)
-        print(title)
+        # print(title)
 
     return news
 

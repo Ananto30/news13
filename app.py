@@ -1,15 +1,11 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, render_template
 from flask_caching import Cache
-from flask_restful import Api, Resource
-from flask_restful.reqparse import RequestParser
-from flask_sslify import SSLify
 
 from prothom_alo_bangladesh import get_bangladesh_news
 from prothom_alo_feed import get_all_news
 
 app = Flask(__name__, static_folder="static", static_url_path="")
 
-sslify = SSLify(app)
 
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
 
