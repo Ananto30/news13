@@ -1,8 +1,8 @@
 from flask import Flask, render_template
 from flask_caching import Cache
 
-from prothom_alo_bangladesh import get_bangladesh_news
-from prothom_alo_feed import get_all_news
+from app.prothom_alo_bangladesh import get_bangladesh_news
+from app.prothom_alo_feed import get_all_news
 
 app = Flask(__name__, static_folder="static", static_url_path="")
 

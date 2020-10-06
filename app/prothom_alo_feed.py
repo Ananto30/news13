@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from pprint import pprint
 
 
-from helpers import pretty_date
+from app.helpers import pretty_date
 
 
 def get_all_news():
