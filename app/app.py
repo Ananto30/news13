@@ -1,8 +1,11 @@
+import json
 import os
 import textwrap
 
+from bson import ObjectId
 from flask import Flask, render_template, request, Response
 from flask_caching import Cache
+from flask_cors import CORS
 
 from app.news_store import NewsStore
 from app.prothom_alo_bangladesh import get_bangladesh_news
@@ -12,9 +15,17 @@ app = Flask(__name__, static_folder="static", static_url_path="")
 
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
 
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 news_store = NewsStore(os.getenv("MONGO_URI"))
 
 PAGE_SIZE = 20
+
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
 
 
 def is_plaintext_client(user_agent):
@@ -31,6 +42,7 @@ def is_plaintext_client(user_agent):
 
 
 def calculate_offset_limit(page):
+    page = int(page)
     offset = (page - 1) * PAGE_SIZE
     limit = page * PAGE_SIZE
     return offset, limit
@@ -83,7 +95,7 @@ def all_news():
 
 @app.route("/api/news/<page>")
 def news_api(page):
-    return cache_db_wrapper(page)
+    return JSONEncoder().encode(cache_db_wrapper(page))
 
 
 @app.route("/bangladesh")
