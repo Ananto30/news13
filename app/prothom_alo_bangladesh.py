@@ -1,13 +1,11 @@
 import dateutil.parser
 import requests as rq
 from bs4 import BeautifulSoup
-from pprint import pprint
 
 from app.helpers import pretty_date
 
 
 def get_bangladesh_news():
-
     page = rq.get("https://www.prothomalo.com/bangladesh")
 
     soup = BeautifulSoup(page.content, "html.parser")
@@ -47,6 +45,5 @@ def get_bangladesh_news():
         # print(title)
 
     return news
-
 
 # pprint(get_bangladesh_news())

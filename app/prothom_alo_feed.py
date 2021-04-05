@@ -1,14 +1,11 @@
 import dateutil.parser
 import requests as rq
 from bs4 import BeautifulSoup
-from pprint import pprint
-
 
 from app.helpers import pretty_date
 
 
 def get_all_news():
-
     page = rq.get("https://www.prothomalo.com/feed")
 
     soup = BeautifulSoup(page.content, "lxml-xml")
@@ -49,6 +46,5 @@ def get_all_news():
         # print(title)
 
     return news
-
 
 # pprint(get_all_news())
