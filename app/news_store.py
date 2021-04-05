@@ -1,6 +1,8 @@
 import dateutil.parser
 from pymongo import MongoClient
 
+from app.helpers import pretty_date
+
 
 class NewsStore:
     DB_NAME = "news"
@@ -21,7 +23,7 @@ class NewsStore:
             if news_time > last_db_news_time:
                 latest_news.append(n)
         if latest_news:
-            print(f"Collected news - \n{' | '.join([n.title for n in latest_news])}")
+            print(f"Collected news - \n{' | '.join([n['title'] for n in latest_news])}")
             self.cursor.insert_many(latest_news)
 
     def get_news(self, offset, limit):
@@ -31,4 +33,7 @@ class NewsStore:
             {"$skip": offset},
             {"$limit": limit},
         ]
-        return list(self.cursor.aggregate(pipeline))
+        news_list = list(self.cursor.aggregate(pipeline))
+        for news in news_list:
+            news['time_ago'] = pretty_date(dateutil.parser.parse(news['published_time']))
+        return news_list
