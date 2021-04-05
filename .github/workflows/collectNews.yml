@@ -1,0 +1,27 @@
+name: CollectNews
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      
+      - name: Install Requirements
+        run: pip install -r requirements.txt
+
+      - name: Run python script
+        run: |
+          python -m script.collect_news
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
