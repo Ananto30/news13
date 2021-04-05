@@ -81,6 +81,11 @@ def all_news():
     return render_template("news.html", data=data)
 
 
+@app.route("/api/news/<page>")
+def news_api(page):
+    return cache_db_wrapper(page)
+
+
 @app.route("/bangladesh")
 @cache.cached(timeout=300)
 def bangladesh_news():
