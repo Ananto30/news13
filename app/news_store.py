@@ -11,7 +11,7 @@ class NewsStore:
         self.db = client[NewsStore.DB_NAME]
         self.cursor = self.db[NewsStore.COLLECTION_NAME]
 
-    def store_news(self, news):
+    def collect_latest_news(self, news):
         pipeline = [{"$sort": {"published_time": -1}}, {"$limit": 1}]
         db_news = list(self.cursor.aggregate(pipeline))
         last_db_news_time = dateutil.parser.parse(db_news[0]["published_time"])
@@ -20,7 +20,9 @@ class NewsStore:
             news_time = dateutil.parser.parse(n["published_time"])
             if news_time > last_db_news_time:
                 latest_news.append(n)
-        if latest_news: self.cursor.insert_many(latest_news)
+        if latest_news:
+            print(f"Collected news - \n{' | '.join([n.title for n in latest_news])}")
+            self.cursor.insert_many(latest_news)
 
     def get_news(self, offset, limit):
         limit = 20 if limit > 20 else limit
