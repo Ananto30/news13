@@ -20,7 +20,7 @@ class NewsStore:
             news_time = dateutil.parser.parse(n["published_time"])
             if news_time > last_db_news_time:
                 latest_news.append(n)
-        self.cursor.insert_many(latest_news)
+        if latest_news: self.cursor.insert_many(latest_news)
 
     def get_news(self, offset, limit):
         limit = 20 if limit > 20 else limit
