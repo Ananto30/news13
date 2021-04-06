@@ -1,8 +1,5 @@
-import dateutil.parser
 import requests as rq
 from bs4 import BeautifulSoup
-
-from app.helpers import pretty_date
 
 
 def get_all_news():
@@ -40,7 +37,7 @@ def get_all_news():
             "summary": summary,
             "author": author,
             "published_time": time,
-            "time_ago": pretty_date(dateutil.parser.parse(time)),
+            # "time_ago": pretty_date(dateutil.parser.parse(time)),
             "link": link["href"],
             "category": category,
         }
