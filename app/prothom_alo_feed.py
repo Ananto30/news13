@@ -32,6 +32,8 @@ def get_all_news():
         if time:
             time = time.get_text()
         link = i.find("link")
+        category = i.find("category")
+        category = category['term']
         a_news = {
             "source": "prothom_alo",
             "title": title,
@@ -40,6 +42,7 @@ def get_all_news():
             "published_time": time,
             "time_ago": pretty_date(dateutil.parser.parse(time)),
             "link": link["href"],
+            "category": category,
         }
 
         news.append(a_news)
