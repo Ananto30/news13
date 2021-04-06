@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import dateutil.parser
 from pymongo import MongoClient
 
@@ -37,3 +39,14 @@ class NewsStore:
         for news in news_list:
             news['time_ago'] = pretty_date(dateutil.parser.parse(news['published_time']))
         return news_list
+
+    def get_duplicate_news(self):
+        duplicate_news = list(self.cursor.aggregate([
+            {"$group": {"_id": "$title", "count": {"$sum": 1}}},
+            {"$match": {"_id": {"$ne": None}, "count": {"$gt": 1}}},
+            {"$project": {"title": "$_id", "_id": 0}}
+        ]))
+        for news in duplicate_news:
+            n = list(self.cursor.find({"title": news['title']}))
+            # self.cursor.remove({"_id": n[0]["_id"]})
+            pprint(n)
