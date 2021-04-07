@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: http://news.dedsec.life/sitemap.xml

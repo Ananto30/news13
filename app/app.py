@@ -3,7 +3,7 @@ import os
 import textwrap
 
 from bson import ObjectId
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, Response, send_from_directory
 from flask_caching import Cache
 from flask_cors import CORS
 
@@ -11,7 +11,7 @@ from app.news_store import NewsStore
 from app.prothom_alo_bangladesh import get_bangladesh_news
 from app.prothom_alo_feed import get_all_news
 
-app = Flask(__name__, static_folder="static", static_url_path="")
+app = Flask(__name__, static_folder="../web-app/public", static_url_path="/")
 
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
 
@@ -61,36 +61,8 @@ def cache_wrapper():
 @cache.cached(timeout=300)
 def cache_db_wrapper(page):
     offset, limit = calculate_offset_limit(page)
-    data = {'news': news_store.get_news(offset, limit), 'page': page}
+    data = {"news": news_store.get_news(offset, limit), "page": page}
     return data
-
-
-@app.route("/")
-def all_news():
-    user_agent = request.headers.get("User-Agent")
-
-    data = cache_db_wrapper(1)
-
-    if is_plaintext_client(user_agent):
-        resp = ""
-        for news in data.news:
-            resp += (
-                    textwrap.fill(news.get("title"), 100)
-                    + "\n"
-                    + "-" * len(news.get("title"))
-                    + "\n"
-                    + textwrap.fill(news.get("summary"), 100)
-                    + "\n"
-                    + "-" * 80
-                    + "\n"
-                    + textwrap.fill(news.get("link"), 100)
-                    + "\n"
-                    + "=" * 95
-                    + "\n"
-            )
-        return Response(resp.encode("utf-8"), mimetype="text/plain")
-
-    return render_template("news.html", data=data)
 
 
 @app.route("/api/news/<page>")
@@ -98,11 +70,31 @@ def news_api(page):
     return JSONEncoder().encode(cache_db_wrapper(page))
 
 
-@app.route("/bangladesh")
-@cache.cached(timeout=300)
-def bangladesh_news():
-    news_list = get_bangladesh_news()
-    return render_template("news.html", data={'news': news_list})
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve(path):
+    user_agent = request.headers.get("User-Agent")
+    data = cache_db_wrapper(1)
+    if is_plaintext_client(user_agent):
+        resp = ""
+        for news in data["news"]:
+            resp += (
+                textwrap.fill(news.get("title"), 100)
+                + "\n"
+                + "-" * len(news.get("title"))
+                + "\n"
+                + textwrap.fill(news.get("summary"), 100)
+                + "\n"
+                + "-" * 80
+                + "\n"
+                + textwrap.fill(news.get("link"), 100)
+                + "\n"
+                + "=" * 95
+                + "\n"
+            )
+        return Response(resp.encode("utf-8"), mimetype="text/plain")
+
+    return send_from_directory(app.static_folder, "index.html")
 
 
 if __name__ == "__main__":

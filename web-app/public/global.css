@@ -1,24 +1,7 @@
-/* @import 'https://fonts.googleapis.com/css?family=Fira+Mono|Noto+Serif|Noto+Sans:300,400,500'; */
-/* @import url(//fonts.googleapis.com/earlyaccess/notosansbengali.css); */
-/* @import url('https://fonts.googleapis.com/css2?family=Baloo+Da+2&display=swap'); */
-/* @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300&display=swap'); */
-
-
 :root {
-    /* --font-header: "Noto Sans", "Arial", "Helvetica", sans-serif;
-    --font-main: "Noto Serif", "Arial", "Helvetica", sans-serif; */
-
-    /* --font-header: 'Baloo Da 2', cursive;
-    --font-main: 'Baloo Da 2', cursive; */
-
     --font-header: 'Baloo Da 2';
     --font-main: 'Baloo Da 2';
-
     --font-mono: "Menlo", "Fira Mono", monospace;
-
-    /* --font-main: 'Hind Siliguri', sans-serif;
-    --font-header: 'Hind Siliguri', sans-serif; */
-
     --font-size: 16px;
 
     /* Primary ysed for hero gradient and links */
@@ -46,7 +29,6 @@
 html {
     font-family: var(--font-main);
     font-size: var(--font-size);
-    /*font-weight: 600;*/
 }
 
 body {
