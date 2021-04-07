@@ -48,9 +48,9 @@ def calculate_offset_limit(page):
     return offset, limit
 
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template("404.html")
+# @app.errorhandler(404)
+# def page_not_found(e):
+#     return render_template("404.html")
 
 
 @cache.cached(timeout=300)
