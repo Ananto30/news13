@@ -1,6 +1,8 @@
+from datetime import datetime
 from pprint import pprint
 
 import dateutil.parser
+import pytz
 from pymongo import MongoClient
 
 from app.helpers import pretty_date
@@ -16,9 +18,14 @@ class NewsStore:
         self.cursor = self.db[NewsStore.COLLECTION_NAME]
 
     def collect_latest_news(self, news):
-        pipeline = [{"$sort": {"published_time": -1}}, {"$limit": 1}]
+        pipeline = [{"$sort": {"published_time": -1}}, {"$limit": 5}]
         db_news = list(self.cursor.aggregate(pipeline))
-        last_db_news_time = dateutil.parser.parse(db_news[0]["published_time"])
+        i = 0
+        last_db_news_time = dateutil.parser.parse(db_news[i]["published_time"])
+        while last_db_news_time > datetime.utcnow().replace(tzinfo=pytz.UTC):
+            last_db_news_time = dateutil.parser.parse(db_news[i]["published_time"])
+            i += 1
+
         latest_news = []
         for n in news:
             news_time = dateutil.parser.parse(n["published_time"])
