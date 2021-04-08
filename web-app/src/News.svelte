@@ -31,23 +31,26 @@
 </style>
 
 {#each newsList as news}
-  <div in:fade>
-    <h4>{news.title}</h4>
-    <h6>
-      {news.time_ago} | {news.category} | {news.author}
-      <span>
-        {#if sharingSupported}
-          <button class="shareBtn" on:click={() => share(news)}>
-            [ শেয়ার ]
-          </button>
-        {/if}
-      </span>
-    </h6>
-    <p>
-      {news.summary}
-      <a href={news.link} target="_blank">বিস্তারিত</a>
+  {#if news.time_ago != ''}
+    <div in:fade>
 
-    </p>
-    <hr />
-  </div>
+      <h4>{news.title}</h4>
+      <h6>
+        {news.time_ago} | {news.category} | {news.author}
+        <span>
+          {#if sharingSupported}
+            <button class="shareBtn" on:click={() => share(news)}>
+              [ শেয়ার ]
+            </button>
+          {/if}
+        </span>
+      </h6>
+      <p>
+        {news.summary}
+        <a href={news.link} target="_blank">বিস্তারিত</a>
+
+      </p>
+      <hr />
+    </div>
+  {/if}
 {/each}
