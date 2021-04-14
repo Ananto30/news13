@@ -71,7 +71,7 @@ def bangladesh_news_api(page):
     return JSONEncoder().encode(cached_bangladesh_news(page))
 
 
-@app.route("/api/news/<page>")
+@app.route("/api/news/all/<page>")
 def news_api(page):
     return JSONEncoder().encode(cached_all_news(page))
 

@@ -1,4 +1,6 @@
 <script>
+  import { prevent_default } from 'svelte/internal'
+
   import News from './News.svelte'
   let page = 1
   let category = 'all'
@@ -6,13 +8,21 @@
   $: newsList = []
   const fetchNews = () => {
     fetching = true
-    fetch('http://news.dedsec.life/api/news/' + page)
+    fetch('http://localhost:5000/api/news/' + category + '/' + page)
       .then((data) => data.json())
       .then((data) => {
         newsList = [...newsList, ...data.news]
         fetching = false
         page++
       })
+  }
+  const fetchCategory = (catg) => {
+    if (catg != category) {
+      newsList = []
+      category = catg
+      page = 1
+      fetchNews()
+    }
   }
   fetchNews()
 </script>
@@ -21,12 +31,17 @@
   .center {
     text-align: center;
   }
+  .pointer {
+    cursor: pointer;
+  }
 </style>
 
 <main class="container">
   <h1>সর্বশেষ খবর​</h1>
   <h6>
-    <a href="/">সব</a>
+    <a class="pointer" on:click={() => fetchCategory('all')}>সব</a>
+    |
+    <a class="pointer" on:click={() => fetchCategory('bangladesh')}>বাংলাদেশ</a>
     (সূত্র: প্রথম আলো)
   </h6>
   <hr />
