@@ -7,6 +7,15 @@ from pymongo import MongoClient
 
 from app.helpers import pretty_date
 
+BANGLADESH_NEWS_CATEGORIES = [
+    "রাজধানী",
+    "জেলা",
+    "করোনাভাইরাস",
+    "অপরাধ",
+    "পরিবেশ",
+    "bangladesh",
+]
+
 
 class NewsStore:
     DB_NAME = "news"
@@ -44,16 +53,43 @@ class NewsStore:
         ]
         news_list = list(self.cursor.aggregate(pipeline))
         for news in news_list:
-            news['time_ago'] = pretty_date(dateutil.parser.parse(news['published_time']))
+            news["time_ago"] = pretty_date(
+                dateutil.parser.parse(news["published_time"])
+            )
+        return news_list
+
+    def get_bangladesh_news(self, offset, limit):
+        limit = 20 if limit > 20 else limit
+        news_list = list(
+            self.cursor.find({"category": {"$in": BANGLADESH_NEWS_CATEGORIES}})
+                .sort("published_time", -1)
+                .skip(offset)
+                .limit(limit)
+        )
+        for news in news_list:
+            news["time_ago"] = pretty_date(
+                dateutil.parser.parse(news["published_time"])
+            )
         return news_list
 
     def get_duplicate_news(self):
-        duplicate_news = list(self.cursor.aggregate([
-            {"$group": {"_id": "$title", "count": {"$sum": 1}}},
-            {"$match": {"_id": {"$ne": None}, "count": {"$gt": 1}}},
-            {"$project": {"title": "$_id", "_id": 0}}
-        ]))
+        duplicate_news = list(
+            self.cursor.aggregate(
+                [
+                    {"$group": {"_id": "$link", "count": {"$sum": 1}}},
+                    {"$match": {"_id": {"$ne": None}, "count": {"$gt": 1}}},
+                    {"$project": {"link": "$_id", "_id": 0}},
+                ]
+            )
+        )
         for news in duplicate_news:
-            n = list(self.cursor.find({"title": news['title']}))
-            # self.cursor.remove({"_id": n[0]["_id"]})
-            pprint(n)
+            duplicates = list(self.cursor.find({"link": news["link"]}))
+            pprint(duplicates)
+
+            # should_remove = duplicates[1:]
+            # for n in should_remove:
+            #     self.cursor.remove({"_id": n["_id"]})
+
+    def get_distinct_categories(self):
+        news = list(self.cursor.distinct("category"))
+        pprint(news)
