@@ -8,7 +8,7 @@
   $: newsList = []
   const fetchNews = () => {
     fetching = true
-    fetch('http://news.dedsec.life/api/news/' + category + '/' + page)
+    fetch('https://liqlerzyj8.execute-api.ap-southeast-1.amazonaws.com/news13/api/news/' + category + '/' + page)
       .then((data) => data.json())
       .then((data) => {
         newsList = [...newsList, ...data.news]
