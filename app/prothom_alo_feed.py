@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 
 def get_all_news():
-    page = rq.get("https://www.prothomalo.com/feed")
+    page = rq.get("https://prod-qt-images.s3.amazonaws.com/production/prothomalo-bangla/feed.xml")
 
     soup = BeautifulSoup(page.content, "lxml-xml")
 
