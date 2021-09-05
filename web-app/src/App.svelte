@@ -1,5 +1,6 @@
 <script>
   import { prevent_default } from 'svelte/internal'
+  import { inview } from 'svelte-inview/dist/index'
 
   import News from './News.svelte'
   let page = 1
@@ -47,7 +48,7 @@
   <hr />
   {#if newsList.length > 0}
     <News bind:newsList />
-    <div class="center">
+    <div class="center" use:inview={{}} on:change={fetchNews}>
       <button on:click={fetchNews} disabled={fetching}>আরও খবর​</button>
     </div>
   {:else}
