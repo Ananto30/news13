@@ -43,8 +43,5 @@ def get_all_news():
         }
 
         news.append(a_news)
-        # print(title)
 
     return news
-
-# pprint(get_all_news())
