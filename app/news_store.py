@@ -5,7 +5,7 @@ import dateutil.parser
 import pytz
 from pymongo import MongoClient
 
-from helpers import pretty_date
+from app.helpers import pretty_date
 
 BANGLADESH_NEWS_CATEGORIES = [
     "রাজধানী",

@@ -7,8 +7,8 @@ from flask import Flask, request, Response, send_from_directory
 from flask_caching import Cache
 from flask_cors import CORS
 
-from news_store import NewsStore
-from prothom_alo_feed import get_all_news
+from app.news_store import NewsStore
+from app.prothom_alo_feed import get_all_news
 
 app = Flask(__name__, static_folder="../web-app/public", static_url_path="/")
 
