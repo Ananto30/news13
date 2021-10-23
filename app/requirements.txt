@@ -1,3 +1,6 @@
+flask
+flask_caching
+flask_cors
 python-dateutil
 pytz
 pymongo
