@@ -2,15 +2,12 @@ package handler
 
 import (
 	"context"
-	"encoding/json"
-	"log"
 	"net/http"
-	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-var BANGLADESH_NEWS_CATEGORIES = [...]string{
+var BANGLADESH_NEWS_CATEGORIES = []string{
 	"রাজধানী",
 	"জেলা",
 	"করোনাভাইরাস",
@@ -20,32 +17,28 @@ var BANGLADESH_NEWS_CATEGORIES = [...]string{
 }
 
 func GetBangladeshNews(w http.ResponseWriter, r *http.Request) {
-	page := r.URL.Query().Get("page")
-	if page == "" {
-		page = "1"
-	}
+	ctx := r.Context()
 
-	pageInt, err := strconv.Atoi(page)
+	offset, err := getOffset(r.URL.Query())
 	if err != nil {
-		log.Fatal(err)
+		sendBadRequestResp(w, "Invalid page number")
+		return
 	}
 
-	offset := (pageInt - 1) * PAGE_SIZE
-
-	news, err := getBangladeshNews(offset)
+	news, err := getBangladeshNews(ctx, offset)
 	if err != nil {
-		log.Fatal(err)
+		sendServerErrorResp(w, err)
+		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(news)
+	sendResp(w, news)
 }
 
-func getBangladeshNews(offset int) (*[]bson.M, error) {
-
-	client := getMongoClient()
+func getBangladeshNews(ctx context.Context, offset int) ([]bson.M, error) {
+	client, err := getMongoClient()
+	if err != nil {
+		return nil, err
+	}
 	collection := client.Database("news").Collection("prothomalo")
 
 	pipeline := []bson.M{
@@ -55,16 +48,16 @@ func getBangladeshNews(offset int) (*[]bson.M, error) {
 		{"$limit": PAGE_SIZE},
 	}
 
-	cursor, err := collection.Aggregate(context.TODO(), pipeline)
+	cursor, err := collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		return nil, err
 	}
 
 	var results []bson.M
-	err = cursor.All(context.TODO(), &results)
+	err = cursor.All(ctx, &results)
 	if err != nil {
 		return nil, err
 	}
 
-	return &results, nil
+	return results, nil
 }

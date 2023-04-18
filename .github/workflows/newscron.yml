@@ -1,4 +1,4 @@
-name: CollectNews
+name: NewsCron
 
 on:
   schedule:
@@ -12,7 +12,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
-      - name: setup python
+      - name: Setup Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
@@ -20,8 +20,14 @@ jobs:
       - name: Install Requirements
         run: pip install -r script/requirements.txt
 
-      - name: Run python script
+      - name: Collect News
         run: |
-          python -m script.collect_news
+          python -m scripts.collect_news
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+
+      - name: Delete Old News
+        run: |
+          python -m scripts.delete_old_news
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}

@@ -3,12 +3,12 @@ import os
 import textwrap
 
 from bson import ObjectId
-from flask import Flask, request, Response, send_from_directory
+from flask import Flask, Response, request, send_from_directory
 from flask_caching import Cache
 from flask_cors import CORS
 
-from app.news_store import NewsStore
-from app.prothom_alo_feed import get_all_news
+from scripts.news_store import NewsStore
+from scripts.prothom_alo_feed import get_all_news
 
 app = Flask(__name__, static_folder="../web-app/public", static_url_path="/")
 
@@ -85,18 +85,18 @@ def serve(path):
         resp = ""
         for news in data["news"]:
             resp += (
-                    textwrap.fill(news.get("title"), 100)
-                    + "\n"
-                    + "-" * len(news.get("title"))
-                    + "\n"
-                    + textwrap.fill(news.get("summary"), 100)
-                    + "\n"
-                    + "-" * 80
-                    + "\n"
-                    + textwrap.fill(news.get("link"), 100)
-                    + "\n"
-                    + "=" * 95
-                    + "\n"
+                textwrap.fill(news.get("title"), 100)
+                + "\n"
+                + "-" * len(news.get("title"))
+                + "\n"
+                + textwrap.fill(news.get("summary"), 100)
+                + "\n"
+                + "-" * 80
+                + "\n"
+                + textwrap.fill(news.get("link"), 100)
+                + "\n"
+                + "=" * 95
+                + "\n"
             )
         return Response(resp.encode("utf-8"), mimetype="text/plain")
 

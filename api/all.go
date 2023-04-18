@@ -3,8 +3,8 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"time"
@@ -19,32 +19,43 @@ const PAGE_SIZE = 20
 var mongoClient *mongo.Client
 
 func GetAllNews(w http.ResponseWriter, r *http.Request) {
-	page := r.URL.Query().Get("page")
+	ctx := r.Context()
+
+	offset, err := getOffset(r.URL.Query())
+	if err != nil {
+		sendBadRequestResp(w, "Invalid page number")
+		return
+	}
+
+	news, err := getNews(ctx, offset)
+	if err != nil {
+		sendServerErrorResp(w, err)
+		return
+	}
+
+	sendResp(w, news)
+}
+
+func getOffset(query url.Values) (int, error) {
+	page := query.Get("page")
 	if page == "" {
 		page = "1"
 	}
 
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
-		log.Fatal(err)
+		return 0, err
 	}
 
 	offset := (pageInt - 1) * PAGE_SIZE
-
-	news, err := getNews(offset)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(news)
+	return offset, nil
 }
 
-func getNews(offset int) (*[]bson.M, error) {
-
-	client := getMongoClient()
+func getNews(ctx context.Context, offset int) ([]bson.M, error) {
+	client, err := getMongoClient()
+	if err != nil {
+		return nil, err
+	}
 	collection := client.Database("news").Collection("prothomalo")
 
 	pipeline := []bson.M{
@@ -53,33 +64,54 @@ func getNews(offset int) (*[]bson.M, error) {
 		{"$limit": PAGE_SIZE},
 	}
 
-	cursor, err := collection.Aggregate(context.TODO(), pipeline)
+	cursor, err := collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		return nil, err
 	}
 
 	var results []bson.M
-	err = cursor.All(context.TODO(), &results)
+	err = cursor.All(ctx, &results)
 	if err != nil {
 		return nil, err
 	}
 
-	return &results, nil
+	return results, nil
 }
 
-func getMongoClient() *mongo.Client {
+func getMongoClient() (*mongo.Client, error) {
 	if mongoClient != nil {
-		return mongoClient
+		return mongoClient, nil
 	}
+
 	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	err = client.Connect(ctx)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
+
 	mongoClient = client
-	return mongoClient
+	return mongoClient, nil
+}
+
+func sendResp(w http.ResponseWriter, r interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(r)
+}
+
+func sendBadRequestResp(w http.ResponseWriter, reason string) {
+	w.WriteHeader(http.StatusBadRequest)
+	w.Write([]byte(reason))
+}
+
+func sendServerErrorResp(w http.ResponseWriter, err error) {
+	w.WriteHeader(http.StatusInternalServerError)
+	w.Write([]byte(err.Error()))
 }

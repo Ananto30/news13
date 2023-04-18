@@ -1,11 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from pprint import pprint
 
 import dateutil.parser
-import pytz
 from pymongo import MongoClient
 
-from app.helpers import pretty_date
+from scripts.helpers import pretty_date
 
 BANGLADESH_NEWS_CATEGORIES = [
     "রাজধানী",
@@ -18,20 +17,24 @@ BANGLADESH_NEWS_CATEGORIES = [
 
 
 class NewsStore:
+    """
+    MongoDB store for news
+    """
+
     DB_NAME = "news"
     COLLECTION_NAME = "prothomalo"
 
     def __init__(self, mongo_uri) -> None:
-        client = MongoClient(mongo_uri)
-        self.db = client[NewsStore.DB_NAME]
-        self.cursor = self.db[NewsStore.COLLECTION_NAME]
+        client: MongoClient = MongoClient(mongo_uri)
+        self.database = client[NewsStore.DB_NAME]
+        self.collection = self.database[NewsStore.COLLECTION_NAME]
 
     def collect_latest_news(self, news):
         pipeline = [{"$sort": {"published_time": -1}}, {"$limit": 5}]
-        db_news = list(self.cursor.aggregate(pipeline))
+        db_news = list(self.collection.aggregate(pipeline))
         i = 0
         last_db_news_time = dateutil.parser.parse(db_news[i]["published_time"])
-        while last_db_news_time > datetime.utcnow().replace(tzinfo=pytz.UTC):
+        while last_db_news_time > datetime.utcnow():
             last_db_news_time = dateutil.parser.parse(db_news[i]["published_time"])
             i += 1
 
@@ -42,7 +45,7 @@ class NewsStore:
                 latest_news.append(n)
         if latest_news:
             print(f"Collected news - \n{' | '.join([n['title'] for n in latest_news])}")
-            self.cursor.insert_many(latest_news)
+            self.collection.insert_many(latest_news)
 
     def get_news(self, offset, limit):
         limit = 20 if limit > 20 else limit
@@ -51,7 +54,7 @@ class NewsStore:
             {"$skip": offset},
             {"$limit": limit},
         ]
-        news_list = list(self.cursor.aggregate(pipeline))
+        news_list = list(self.collection.aggregate(pipeline))
         for news in news_list:
             news["time_ago"] = pretty_date(
                 dateutil.parser.parse(news["published_time"])
@@ -61,10 +64,10 @@ class NewsStore:
     def get_bangladesh_news(self, offset, limit):
         limit = 20 if limit > 20 else limit
         news_list = list(
-            self.cursor.find({"category": {"$in": BANGLADESH_NEWS_CATEGORIES}})
-                .sort("published_time", -1)
-                .skip(offset)
-                .limit(limit)
+            self.collection.find({"category": {"$in": BANGLADESH_NEWS_CATEGORIES}})
+            .sort("published_time", -1)
+            .skip(offset)
+            .limit(limit)
         )
         for news in news_list:
             news["time_ago"] = pretty_date(
@@ -74,7 +77,7 @@ class NewsStore:
 
     def get_duplicate_news(self):
         duplicate_news = list(
-            self.cursor.aggregate(
+            self.collection.aggregate(
                 [
                     {"$group": {"_id": "$link", "count": {"$sum": 1}}},
                     {"$match": {"_id": {"$ne": None}, "count": {"$gt": 1}}},
@@ -83,13 +86,18 @@ class NewsStore:
             )
         )
         for news in duplicate_news:
-            duplicates = list(self.cursor.find({"link": news["link"]}))
+            duplicates = list(self.collection.find({"link": news["link"]}))
             pprint(duplicates)
 
             # should_remove = duplicates[1:]
             # for n in should_remove:
             #     self.cursor.remove({"_id": n["_id"]})
 
+    def delete_news_older_than(self, days) -> int:
+        return self.collection.delete_many(
+            {"published_time": {"$lt": datetime.utcnow() - timedelta(days=days)}}
+        ).deleted_count
+
     def get_distinct_categories(self):
-        news = list(self.cursor.distinct("category"))
+        news = list(self.collection.distinct("category"))
         pprint(news)

@@ -1,36 +1,42 @@
-import requests as rq
+import requests
 from bs4 import BeautifulSoup
 
 
 def get_all_news():
-    page = rq.get("https://prod-qt-images.s3.amazonaws.com/production/prothomalo-bangla/feed.xml")
+    """
+    Gather all news from Prothom Alo
+    """
+
+    page = requests.get(
+        "https://prod-qt-images.s3.amazonaws.com/production/prothomalo-bangla/feed.xml",
+        timeout=30,
+    )
 
     soup = BeautifulSoup(page.content, "lxml-xml")
-
-    info = soup.find_all("entry")
+    entries = soup.find_all("entry")
 
     news = []
 
-    for i in info:
-        title = i.find("title")
+    for entry in entries:
+        title = entry.find("title")
         title = title.get_text()
-        content = i.find("summary")
+        content = entry.find("summary")
         summary = BeautifulSoup(content.get_text().strip(), "html.parser")
         if summary:
             summary = summary.get_text().strip()
             # summary = summary[:-10]
         else:
             continue
-        author = i.find("author")
+        author = entry.find("author")
         author = author.find("name")
         if author:
             author = author.get_text()
-        time = i.find("published")
+        time = entry.find("published")
         if time:
             time = time.get_text()
-        link = i.find("link")
-        category = i.find("category")
-        category = category['term']
+        link = entry.find("link")
+        category = entry.find("category")
+        category = category["term"]
         a_news = {
             "source": "prothom_alo",
             "title": title,

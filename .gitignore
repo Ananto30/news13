@@ -8,3 +8,12 @@ __pycache__
 # Go
 bin/
 vendor/
+
+# Python
+__pycache__/
+*.py[cod]
+$py.class
+.mypy_cache/
+.pytest_cache/
+.coverage
+.coverage.*
