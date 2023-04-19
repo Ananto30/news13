@@ -34,7 +34,7 @@ class NewsStore:
         db_news = list(self.collection.aggregate(pipeline))
         i = 0
         last_db_news_time = dateutil.parser.parse(db_news[i]["published_time"])
-        while last_db_news_time > datetime.utcnow():
+        while last_db_news_time.timestamp() > datetime.utcnow().timestamp():
             last_db_news_time = dateutil.parser.parse(db_news[i]["published_time"])
             i += 1
 
