@@ -3,7 +3,7 @@ SHELL := /bin/bash
 setup:
 	python3 -m venv venv
 	source venv/bin/activate && ( \
-		pip install -r script/requirements.txt; \
+		pip install -r scripts/requirements.txt; \
 		pip install black isort flake8 pylint pytype mypy; \
 		)
 
