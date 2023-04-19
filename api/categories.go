@@ -26,26 +26,17 @@ func getCategories(ctx context.Context) ([]string, error) {
 	}
 	collection := client.Database("news").Collection("prothomalo")
 
-	pipeline := []bson.M{
-		{"$group": bson.M{"_id": "$category"}},
-		{"$sort": bson.M{"_id": 1}},
-	}
-
-	cursor, err := collection.Aggregate(ctx, pipeline)
+	categories, err := collection.Distinct(ctx, "category", bson.M{})
 	if err != nil {
 		return nil, err
 	}
 
-	var results []bson.M
-	err = cursor.All(ctx, &results)
-	if err != nil {
-		return nil, err
+	var result []string
+	for _, category := range categories {
+		if c, ok := category.(string); ok {
+			result = append(result, c)
+		}
 	}
 
-	var categories []string
-	for _, result := range results {
-		categories = append(categories, result["_id"].(string))
-	}
-
-	return categories, nil
+	return result, nil
 }

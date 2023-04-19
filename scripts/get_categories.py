@@ -6,5 +6,4 @@ news_store = NewsStore(os.getenv("MONGO_URI"))
 
 
 if __name__ == "__main__":
-    count = news_store.delete_news_older_than(180)
-    print(f"Deleted {count} old news")
+    news_store.get_distinct_categories()

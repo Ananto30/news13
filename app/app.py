@@ -8,7 +8,7 @@ from flask_caching import Cache
 from flask_cors import CORS
 
 from scripts.news_store import NewsStore
-from scripts.prothom_alo_feed import get_all_news
+from scripts.prothom_alo_feed import get_latest_news
 
 app = Flask(__name__, static_folder="../web-app/public", static_url_path="/")
 
@@ -49,7 +49,7 @@ def calculate_offset_limit(page):
 
 @cache.cached(timeout=300)
 def cache_wrapper():
-    return get_all_news()
+    return get_latest_news()
 
 
 @cache.cached(timeout=300)

@@ -1,7 +1,21 @@
 from datetime import datetime, timedelta
 
+from scripts.models import News
 
-def pretty_date(time=False):
+
+def print_headlines(news_list: list[News]):
+    """
+    Print news headlines
+    """
+    print(f"সর্বশেষ খবর - {len(news_list)} টি")
+    for news in news_list:
+        print(f"{news.title} - {pretty_date(news.published_time.timestamp())}")
+        print(f"{news.summary}")
+        print(f"বিস্তারিত: {news.link}")
+        print("-" * 50)
+
+
+def pretty_date(time):
     """
     Get a datetime object or a int() Epoch timestamp and return a
     pretty string like 'an hour ago', 'Yesterday', '3 months ago',
@@ -10,7 +24,7 @@ def pretty_date(time=False):
     now = datetime.utcnow()
 
     if isinstance(time, int):
-        time_diff = now - datetime.fromtimestamp(time)
+        time_diff = now - datetime.utcfromtimestamp(time)
     elif isinstance(time, datetime):
         time_diff = now - time
     else:

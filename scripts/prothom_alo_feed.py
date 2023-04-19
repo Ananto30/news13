@@ -1,8 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 
+from scripts.models import News
 
-def get_all_news():
+
+def get_latest_news() -> list[News]:
     """
     Gather all news from Prothom Alo
     """
@@ -15,39 +17,32 @@ def get_all_news():
     soup = BeautifulSoup(page.content, "lxml-xml")
     entries = soup.find_all("entry")
 
-    news = []
-
+    news_list = []
     for entry in entries:
-        title = entry.find("title")
-        title = title.get_text()
-        content = entry.find("summary")
-        summary = BeautifulSoup(content.get_text().strip(), "html.parser")
-        if summary:
-            summary = summary.get_text().strip()
-            # summary = summary[:-10]
-        else:
-            continue
-        author = entry.find("author")
-        author = author.find("name")
-        if author:
-            author = author.get_text()
-        time = entry.find("published")
-        if time:
-            time = time.get_text()
-        link = entry.find("link")
-        category = entry.find("category")
-        category = category["term"]
-        a_news = {
-            "source": "prothom_alo",
-            "title": title,
-            "summary": summary,
-            "author": author,
-            "published_time": time,
-            # "time_ago": pretty_date(dateutil.parser.parse(time)),
-            "link": link["href"],
-            "category": category,
-        }
+        news = _parse_news(entry)
+        if news:
+            news_list.append(news)
 
-        news.append(a_news)
+    return news_list
 
-    return news
+
+def _parse_news(element):
+    title = element.find("title").get_text()
+    summary = BeautifulSoup(element.find("summary").get_text().strip(), "html.parser")
+    if summary:
+        summary = summary.get_text().strip()
+    else:
+        return None
+    author = element.find("author").find("name").get_text()
+    time = element.find("published").get_text()
+    link = element.find("link")["href"]
+    category = element.find("category")["term"]
+    return News(
+        source="prothom_alo",
+        title=title,
+        summary=summary,
+        author=author,
+        published_time=time,
+        link=link,
+        category=category,
+    )
