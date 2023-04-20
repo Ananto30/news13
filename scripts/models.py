@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from typing import Optional
 
@@ -25,3 +25,6 @@ class News:
             if isinstance(self.published_time, str)
             else self.published_time
         )
+
+    def dict(self):
+        return {k: str(v) for k, v in asdict(self).items()}

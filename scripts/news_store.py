@@ -53,9 +53,8 @@ class NewsStore:
             if news.published_time.timestamp() > last_db_news_timestamp
         ]
         if latest_news:
-            print("সর্বশেষ খবর সংগ্রহ করা হল")
+            self.collection.insert_many([news.dict() for news in latest_news])
             print_headlines(latest_news)
-            self.collection.insert_many(latest_news)
 
     def get_news(self, offset, limit):
         limit = 20 if limit > 20 else limit

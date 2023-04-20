@@ -8,6 +8,7 @@ def print_headlines(news_list: list[News]):
     Print news headlines
     """
     print(f"সর্বশেষ খবর - {len(news_list)} টি")
+    print("=" * 50)
     for news in news_list:
         print(f"{news.title} - {pretty_date(news.published_time.timestamp())}")
         print(f"{news.summary}")
