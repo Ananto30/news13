@@ -1,3 +1,5 @@
+@import url('https://fonts.cdnfonts.com/css/baloo-da-2-2');
+
 :root {
     --font-header: 'Baloo Da 2';
     --font-main: 'Baloo Da 2';
@@ -23,7 +25,7 @@
 }
 
 * {
-    box-sizing: border-box;   
+    box-sizing: border-box;
 }
 
 html {
@@ -41,7 +43,7 @@ body {
 }
 
 /* Header theme */
-body > header {
+body>header {
     min-height: var(--hero-height);
     display: flex;
     flex-direction: column;
@@ -57,11 +59,11 @@ body > header {
     padding: 4em 1em;
 }
 
-body > header > * {
+body>header>* {
     z-index: 1;
 }
 
-body > header > img {
+body>header>img {
     position: absolute;
     top: 0;
     left: 0;
@@ -74,48 +76,48 @@ body > header > img {
     z-index: 0;
 }
 
-body > header > h1,
-body > header > h2 {
+body>header>h1,
+body>header>h2 {
     text-align: center;
 }
 
-body > header > h1 {
+body>header>h1 {
     position: relative;
     font-size: 4em;
 }
 
-body > header > h2 {
+body>header>h2 {
     margin: 0;
     position: relative;
     font-size: 2.5em;
 }
 
-body > header > nav {
+body>header>nav {
     position: absolute;
     top: 2rem;
     right: 2.5rem;
 }
 
-body > header > nav a {
+body>header>nav a {
     color: var(--colorscheme-fg-dark);
     margin: 0 0.5rem;
 }
 
-body > header + * {
+body>header+* {
     margin-top: var(--hero-height);
 }
 
-body > header + nav:before {
+body>header+nav:before {
     content: "Navigation: ";
     padding-right: 1em;
 }
 
-body > header + nav {
+body>header+nav {
     margin-top: calc(var(--hero-height) - 1em);
     margin-bottom: 2em;
 }
 
-body > header + nav a {
+body>header+nav a {
     padding: 0.25em;
     margin: 0 0.5em;
 }
@@ -133,10 +135,10 @@ strong {
     color: var(--colorscheme-fg-dark);
 }
 
-h1, 
-h2, 
-h3, 
-h4, 
+h1,
+h2,
+h3,
+h4,
 h5,
 h6,
 th,
@@ -173,42 +175,42 @@ th {
     font-size: 1rem;
 }
 
-h1 + h1,
-h1 + h2,
-h1 + h3,
-h1 + h4,
-h1 + h5,
-h1 + h6,
-h2 + h1,
-h2 + h2,
-h2 + h3,
-h2 + h4,
-h2 + h5,
-h2 + h6,
-h3 + h1,
-h3 + h2,
-h3 + h3,
-h3 + h4,
-h3 + h5,
-h3 + h6,
-h4 + h1,
-h4 + h2,
-h4 + h3,
-h4 + h4,
-h4 + h5,
-h4 + h6,
-h5 + h1,
-h5 + h2,
-h5 + h3,
-h5 + h4,
-h5 + h5,
-h5 + h6,
-h6 + h1,
-h6 + h2,
-h6 + h3,
-h6 + h4,
-h6 + h5,
-h6 + h6 {
+h1+h1,
+h1+h2,
+h1+h3,
+h1+h4,
+h1+h5,
+h1+h6,
+h2+h1,
+h2+h2,
+h2+h3,
+h2+h4,
+h2+h5,
+h2+h6,
+h3+h1,
+h3+h2,
+h3+h3,
+h3+h4,
+h3+h5,
+h3+h6,
+h4+h1,
+h4+h2,
+h4+h3,
+h4+h4,
+h4+h5,
+h4+h6,
+h5+h1,
+h5+h2,
+h5+h3,
+h5+h4,
+h5+h5,
+h5+h6,
+h6+h1,
+h6+h2,
+h6+h3,
+h6+h4,
+h6+h5,
+h6+h6 {
     margin-top: -0.5rem;
     margin-bottom: 0;
 }
@@ -222,7 +224,7 @@ em, i {
 }
 
 p {
-   margin: 0.75em 0;
+    margin: 0.75em 0;
 }
 
 code,
@@ -252,7 +254,7 @@ hr {
 }
 
 a {
-    color: var(--colorscheme-accent-one); 
+    color: var(--colorscheme-accent-one);
     text-decoration: none;
     padding: 0 0.1em;
     height: 1.25em;
@@ -297,10 +299,10 @@ ul {
     list-style: square;
 }
 
-ul > ul, 
-ol > ol, 
-ul > ol, 
-ol > ul {
+ul>ul,
+ol>ol,
+ul>ol,
+ol>ul {
     margin-top: 0;
     margin-bottom: 0;
 }
@@ -445,18 +447,18 @@ textarea[disabled]::placeholder {
         padding: 1.5em;
     }
 
-    body > header + nav {
+    body>header+nav {
         margin-top: calc(var(--hero-height));
     }
 
-    body > header + nav:before {
+    body>header+nav:before {
         display: none;
     }
 
     table, table * {
         display: block;
     }
-    
+
     tr {
         border: none;
     }
@@ -488,12 +490,3 @@ textarea[disabled]::placeholder {
         font-weight: bold;
     }
 }
-
-
-
-
-
-
-
-
-
