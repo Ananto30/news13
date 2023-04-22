@@ -84,6 +84,12 @@
     padding: 0 4rem;
   }
 
+  @media (max-width: 50em) {
+    .inside {
+      padding: 0 0.5rem;
+    }
+  }
+
   .top-padding {
     padding-top: 3rem;
   }
