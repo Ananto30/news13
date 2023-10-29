@@ -99,10 +99,11 @@ class NewsStore:
             #     self.collection.delete_one({"_id": news["_id"]})
 
     def delete_news_older_than(self, days) -> int:
+        days_ago = datetime.utcnow() - timedelta(days=days)
         return self.collection.delete_many(
             {
                 "published_time": {
-                    "$lt": (datetime.utcnow() - timedelta(days=days)).isoformat()
+                    "$lt": days_ago.isoformat()
                 }
             }
         ).deleted_count
