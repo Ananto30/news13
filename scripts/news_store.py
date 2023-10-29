@@ -110,3 +110,6 @@ class NewsStore:
     def get_distinct_categories(self):
         news = list(self.collection.distinct("category"))
         pprint(news)
+
+    def total_news(self):
+        return self.collection.count_documents({})
